@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "fetch-data": "echo \"Fetch step added in Story 1.4\""
+    "fetch-data": "node scripts/fetch-one-hit-wonders.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
