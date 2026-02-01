@@ -12,45 +12,86 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
 const OUTPUT_PATH = join(ROOT, "src", "data", "one-hit-wonders.json");
 
+const FETCH_TIMEOUT_MS = 30_000;
+const EXIT_NETWORK = 1;
+const EXIT_API = 2;
+const EXIT_FILE = 3;
+
 const API_URL =
   "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&rvslots=*&titles=List_of_one-hit_wonders_in_the_United_States&formatversion=2&format=json";
+
+const USER_AGENT = "IsItAOneHitWonder/1.0 (https://github.com/IsItAOneHitWonder)";
 
 /**
  * Fetch wikitext from MediaWiki API.
  * @returns {Promise<string>} Raw wikitext content
  */
 async function fetchWikitext() {
-  const res = await fetch(API_URL, {
-    headers: { "User-Agent": "IsItAOneHitWonder/1.0 (https://github.com/)" },
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+  let res;
+  try {
+    res = await fetch(API_URL, {
+      headers: { "User-Agent": USER_AGENT },
+      signal: controller.signal,
+    });
+  } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === "AbortError") {
+      console.error("API request timed out");
+    } else {
+      console.error("Network error:", err.message);
+    }
+    process.exit(EXIT_NETWORK);
+  }
+  clearTimeout(timeoutId);
 
   if (!res.ok) {
     console.error(`API request failed: ${res.status} ${res.statusText}`);
-    process.exit(1);
+    process.exit(EXIT_API);
   }
 
-  const data = await res.json();
+  const contentType = res.headers.get("content-type") || "";
+  if (!contentType.includes("application/json")) {
+    console.error("API response was not JSON (Content-Type:", contentType, ")");
+    process.exit(EXIT_API);
+  }
+
+  let data;
+  try {
+    data = await res.json();
+  } catch (err) {
+    console.error("API response was not valid JSON:", err.message);
+    process.exit(EXIT_API);
+  }
+
   if (data.error) {
     console.error("API error:", data.error.info || data.error);
-    process.exit(1);
+    process.exit(EXIT_API);
   }
 
   const pages = data?.query?.pages;
   if (!pages?.length) {
     console.error("No pages in API response");
-    process.exit(1);
+    process.exit(EXIT_API);
   }
 
   const revisions = pages[0]?.revisions;
   if (!revisions?.length) {
     console.error("No revisions in API response");
-    process.exit(1);
+    process.exit(EXIT_API);
   }
 
   const content = revisions[0]?.slots?.main?.content;
   if (content == null) {
     console.error("No wikitext content in API response");
-    process.exit(1);
+    process.exit(EXIT_API);
+  }
+
+  if (!content.includes("one-hit") && !content.includes("List of")) {
+    console.error("API response does not look like the expected list page");
+    process.exit(EXIT_API);
   }
 
   return content;
@@ -70,12 +111,12 @@ function parseLine(line) {
   const match = rest.match(/^(.+?)\s*[–\-]\s*["'](.+?)["']\s*\((\d{4})\)/);
   if (!match) return null;
   let [, artistPart, songPart, year] = match;
-  // Strip wikilinks [[x]] or [[x|y]] and external links [url text]
+  // Strip wikilinks [[x]] or [[x|y]], external links [url text], and citations [47]
   const stripLinks = (s) =>
     s
       .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (_, a, b) => (b || a).trim())
       .replace(/\[https?:\/[^\]\s]+\s+([^\]]+)\]/g, "$1")
-      .replace(/\s*\[\d+\]\s*$/g, "")
+      .replace(/\[\d+\]/g, "")
       .trim();
   artistPart = stripLinks(artistPart);
   songPart = stripLinks(songPart);
@@ -137,12 +178,17 @@ async function main() {
   const entries = parseWikitext(wikitext);
   const withSlugs = assignSlugs(entries);
   const outDir = dirname(OUTPUT_PATH);
-  mkdirSync(outDir, { recursive: true });
-  writeFileSync(OUTPUT_PATH, JSON.stringify(withSlugs, null, 2), "utf8");
+  try {
+    mkdirSync(outDir, { recursive: true });
+    writeFileSync(OUTPUT_PATH, JSON.stringify(withSlugs, null, 2), "utf8");
+  } catch (err) {
+    console.error("Failed to write output file:", err.message);
+    process.exit(EXIT_FILE);
+  }
   console.log(`Wrote ${withSlugs.length} entries to ${OUTPUT_PATH}`);
 }
 
 main().catch((err) => {
   console.error(err);
-  process.exit(1);
+  process.exit(EXIT_NETWORK);
 });

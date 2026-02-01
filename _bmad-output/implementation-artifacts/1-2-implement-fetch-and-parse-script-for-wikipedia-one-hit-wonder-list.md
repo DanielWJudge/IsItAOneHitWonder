@@ -1,6 +1,6 @@
 # Story 1.2: Implement fetch and parse script for Wikipedia one-hit wonder list
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -42,6 +42,16 @@ So that the product has a single source of list data without scraping.
   - [x] Create `src/data/` directory if it doesn't exist
 - [x] Task 5: Wire npm script (AC: #1)
   - [x] Update `package.json` "fetch-data" script to run the fetch script (e.g. `node scripts/fetch-one-hit-wonders.js`)
+
+### Review Follow-ups (AI)
+
+- [x] [AI-Review][MEDIUM] Add fetch timeout (e.g. AbortController + 30s) so script does not hang [scripts/fetch-one-hit-wonders.js]
+- [x] [AI-Review][MEDIUM] Handle non-JSON response (try/catch around res.json() or Content-Type check); clear error message [scripts/fetch-one-hit-wonders.js]
+- [x] [AI-Review][MEDIUM] Wrap writeFileSync (and mkdirSync) in try/catch for disk/permission errors [scripts/fetch-one-hit-wonders.js]
+- [x] [AI-Review][LOW] Use full repo URL in User-Agent (e.g. https://github.com/user/repo) [scripts/fetch-one-hit-wonders.js]
+- [x] [AI-Review][LOW] Consider stripping citation refs [47] globally in artist/song, not only at end [scripts/fetch-one-hit-wonders.js]
+- [x] [AI-Review][LOW] Consider distinct exit codes for network vs API vs parse/file errors
+- [x] [AI-Review][LOW] Optional: sanity-check response content is expected list page before parsing
 
 ## Dev Notes
 
@@ -129,6 +139,7 @@ No new npm dependencies required; script uses Node built-ins.
 - Parser: regex-based parsing for `* [[Artist]] – "[[Song]]" (YEAR)` and variants; strips wikilinks `[[...]]` and external links `[url text]`; skips section headers `== ... ==`; tolerates citations `[47]`. Output: 1774 entries.
 - Slug: lowercase, alphanumeric + hyphens; uniqueness via numeric suffix when duplicate. JSON written to `src/data/one-hit-wonders.json`; `src/data/` created if missing.
 - `package.json` "fetch-data" script set to `node scripts/fetch-one-hit-wonders.js`. Manual validation: script and `npm run fetch-data` run successfully; JSON has hundreds of entries with `artist`, `song`, `year`, `slug`. No automated tests per story.
+- Post-review fixes (2026-02-01): Added fetch timeout (AbortController, 30s); Content-Type check and try/catch around res.json(); try/catch around mkdirSync/writeFileSync with EXIT_FILE; distinct exit codes (EXIT_NETWORK=1, EXIT_API=2, EXIT_FILE=3); full User-Agent URL; global citation strip; sanity check that response content includes "one-hit" or "List of". Script re-validated (1774 entries).
 
 ### File List
 
@@ -137,7 +148,17 @@ No new npm dependencies required; script uses Node built-ins.
 - src/data/ (new directory)
 - package.json (modified: fetch-data script)
 - _bmad-output/implementation-artifacts/sprint-status.yaml (modified: story 1.2 status)
+- _bmad-output/implementation-artifacts/1-2-code-review-findings.md (new: code review)
 
 ## Change Log
 
 - 2026-02-01: Implemented fetch script (MediaWiki API), wikitext parser, slug generation, JSON output to `src/data/one-hit-wonders.json`; wired `npm run fetch-data`. All tasks complete; status → review.
+- 2026-02-01: Code review (AI). AC and tasks validated. 3 MEDIUM, 4 LOW issues. Review follow-ups added; status → in-progress. Findings: _bmad-output/implementation-artifacts/1-2-code-review-findings.md.
+- 2026-02-01: All review follow-ups fixed in scripts/fetch-one-hit-wonders.js (timeout, non-JSON handling, file write try/catch, exit codes, User-Agent, citation strip, sanity check). Status → done.
+
+## Senior Developer Review (AI)
+
+**Review date:** 2026-02-01  
+**Outcome:** Changes requested (non-blocking)
+
+**Summary:** Acceptance criteria and all tasks verified as implemented. No false claims. Seven issues found: 3 MEDIUM (fetch timeout, non-JSON response handling, sync write not in try/catch), 4 LOW (User-Agent URL, citation stripping, exit codes, response sanity check). See Review Follow-ups (AI) in Tasks and full findings in `1-2-code-review-findings.md`.
