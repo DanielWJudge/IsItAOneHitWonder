@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IsItAOneHitWonder — Design Directions</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; }
+    nav { padding: 1rem; background: #1a1a1a; color: #fff; display: flex; gap: 1rem; flex-wrap: wrap; }
+    nav a { color: #fff; }
+    section { padding: 2rem 1rem; max-width: 480px; margin: 0 auto; }
+    .dir { margin-bottom: 3rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; }
+    .dir h2 { margin: 0; padding: 0.75rem 1rem; font-size: 1rem; }
+    .mock { padding: 1.5rem; min-height: 400px; }
+    input, button { font-size: 1rem; }
+    .result-verdict { font-weight: 700; margin: 0.5rem 0; }
+    .result-one-hit { font-size: 1.1rem; margin: 0.5rem 0; }
+    .result-def { font-size: 0.9rem; color: #555; margin: 0.5rem 0; }
+    .result-source { font-size: 0.85rem; margin: 0.5rem 0; }
+    .btn-copy { margin-top: 1rem; padding: 0.6rem 1rem; cursor: pointer; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <strong>Design directions</strong>
+    <a href="#dir1">1. Minimal neutral</a>
+    <a href="#dir2">2. Warm accent</a>
+    <a href="#dir3">3. Trust green</a>
+    <a href="#dir4">4. Compact</a>
+  </nav>
+
+  <section>
+    <div id="dir1" class="dir">
+      <h2>Direction 1 — Minimal neutral</h2>
+      <div class="mock" style="background:#fafafa;">
+        <p style="font-size:0.9rem;color:#666;">Home — search</p>
+        <input type="text" placeholder="Artist or song" style="width:100%;padding:0.75rem;border:1px solid #ccc;border-radius:6px;" value="Chumbawamba" />
+        <button type="button" style="margin-top:0.5rem;padding:0.6rem 1rem;background:#333;color:#fff;border:none;border-radius:6px;">Search</button>
+        <hr style="margin:1.5rem 0;border:0;border-top:1px solid #eee;" />
+        <p style="font-size:0.9rem;color:#666;">Result page</p>
+        <p class="result-verdict" style="font-size:2rem;color:#1a1a1a;">Yes</p>
+        <p class="result-one-hit" style="color:#1a1a1a;">The one hit: Tubthumping – Chumbawamba</p>
+        <p class="result-def" style="color:#555;">We use the Wikipedia US one-hit wonder list: one top-40 hit in the US.</p>
+        <p class="result-source"><a href="#" style="color:#333;">Source: Wikipedia US list</a> · <a href="#">CC BY-SA 4.0</a></p>
+        <button class="btn-copy" style="background:#333;color:#fff;border:none;">Copy one line</button>
+      </div>
+    </div>
+
+    <div id="dir2" class="dir">
+      <h2>Direction 2 — Warm accent</h2>
+      <div class="mock" style="background:#fffbf5;">
+        <p style="font-size:0.9rem;color:#6b5b4f;">Home — search</p>
+        <input type="text" placeholder="Artist or song" style="width:100%;padding:0.75rem;border:2px solid #c45a2b;border-radius:8px;" value="Chumbawamba" />
+        <button type="button" style="margin-top:0.5rem;padding:0.6rem 1rem;background:#c45a2b;color:#fff;border:none;border-radius:8px;">Search</button>
+        <hr style="margin:1.5rem 0;border:0;border-top:1px solid #e8d5c4;" />
+        <p style="font-size:0.9rem;color:#6b5b4f;">Result page</p>
+        <p class="result-verdict" style="font-size:2rem;color:#2d1f18;">Yes</p>
+        <p class="result-one-hit" style="color:#2d1f18;">The one hit: Tubthumping – Chumbawamba</p>
+        <p class="result-def" style="color:#6b5b4f;">We use the Wikipedia US one-hit wonder list: one top-40 hit in the US.</p>
+        <p class="result-source"><a href="#" style="color:#c45a2b;">Source: Wikipedia US list</a> · <a href="#" style="color:#c45a2b;">CC BY-SA 4.0</a></p>
+        <button class="btn-copy" style="background:#c45a2b;color:#fff;border:none;">Copy one line</button>
+      </div>
+    </div>
+
+    <div id="dir3" class="dir">
+      <h2>Direction 3 — Trust green</h2>
+      <div class="mock" style="background:#f5f9f5;">
+        <p style="font-size:0.9rem;color:#2d4a2d;">Home — search</p>
+        <input type="text" placeholder="Artist or song" style="width:100%;padding:0.75rem;border:2px solid #2d6a2d;border-radius:8px;" value="Chumbawamba" />
+        <button type="button" style="margin-top:0.5rem;padding:0.6rem 1rem;background:#2d6a2d;color:#fff;border:none;border-radius:8px;">Search</button>
+        <hr style="margin:1.5rem 0;border:0;border-top:1px solid #c8e0c8;" />
+        <p style="font-size:0.9rem;color:#2d4a2d;">Result page</p>
+        <p class="result-verdict" style="font-size:2rem;color:#1a4a1a;">Yes</p>
+        <p class="result-one-hit" style="color:#1a3a1a;">The one hit: Tubthumping – Chumbawamba</p>
+        <p class="result-def" style="color:#2d4a2d;">We use the Wikipedia US one-hit wonder list: one top-40 hit in the US.</p>
+        <p class="result-source"><a href="#" style="color:#2d6a2d;">Source: Wikipedia US list</a> · <a href="#" style="color:#2d6a2d;">CC BY-SA 4.0</a></p>
+        <button class="btn-copy" style="background:#2d6a2d;color:#fff;border:none;">Copy one line</button>
+      </div>
+    </div>
+
+    <div id="dir4" class="dir">
+      <h2>Direction 4 — Compact</h2>
+      <div class="mock" style="background:#fff;padding:1rem;">
+        <p style="font-size:0.8rem;color:#666;margin:0 0 0.5rem 0;">Home — search</p>
+        <input type="text" placeholder="Artist or song" style="width:100%;padding:0.5rem;border:1px solid #999;border-radius:4px;font-size:0.95rem;" value="Chumbawamba" />
+        <button type="button" style="margin-top:0.25rem;padding:0.5rem 0.75rem;background:#444;color:#fff;border:none;border-radius:4px;font-size:0.9rem;">Search</button>
+        <hr style="margin:1rem 0;border:0;border-top:1px solid #ddd;" />
+        <p style="font-size:0.8rem;color:#666;margin:0 0 0.25rem 0;">Result</p>
+        <p class="result-verdict" style="font-size:1.6rem;color:#111;margin:0.25rem 0;">Yes</p>
+        <p class="result-one-hit" style="font-size:1rem;color:#111;margin:0.25rem 0;">The one hit: Tubthumping – Chumbawamba</p>
+        <p class="result-def" style="font-size:0.85rem;color:#555;margin:0.25rem 0;">We use the Wikipedia US one-hit wonder list: one top-40 hit in the US.</p>
+        <p class="result-source" style="font-size:0.8rem;"><a href="#" style="color:#444;">Source</a> · <a href="#">CC BY-SA 4.0</a></p>
+        <button class="btn-copy" style="background:#444;color:#fff;border:none;padding:0.5rem 0.75rem;font-size:0.9rem;">Copy one line</button>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
