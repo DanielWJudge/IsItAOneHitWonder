@@ -1,17 +1,13 @@
 ---
-import '../styles/global.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
+// Build-time import via shared module: single source for list data (ADR-1).
+import listData from '../data/load-list';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Is It A One Hit Wonder</title>
-	</head>
-	<body>
-		<h1 class="text-lg">Astro</h1>
-	</body>
-</html>
+<BaseLayout title="Is It A One Hit Wonder">
+	<h1 class="text-lg">Is It A One Hit Wonder</h1>
+	<!-- List data inlined at build for client-side search (Epic 2). Client loads from window.__ONE_HIT_WONDERS__. -->
+	<script define:vars={{ list: listData }}>
+		window.__ONE_HIT_WONDERS__ = list;
+	</script>
+</BaseLayout>

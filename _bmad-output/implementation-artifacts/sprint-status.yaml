@@ -19,7 +19,7 @@ development_status:
   epic-1: in-progress
   1-1-set-up-initial-project-from-starter-template: done
   1-2-implement-fetch-and-parse-script-for-wikipedia-one-hit-wonder-list: done
-  1-3-wire-build-time-json-into-astro-and-static-output: backlog
+  1-3-wire-build-time-json-into-astro-and-static-output: done
   1-4-add-ci-workflow-with-fetch-build-and-deploy-to-github-pages: backlog
   1-5-configure-site-url-and-https-for-github-pages: backlog
   epic-1-retrospective: optional

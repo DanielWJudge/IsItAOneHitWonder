@@ -1,0 +1,31 @@
+---
+/**
+ * Shared layout: head consistency, favicons, generator meta, global styles.
+ * Use on index and result pages so structure and assets stay in sync.
+ */
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+}
+
+const { title, description } = Astro.props;
+const siteTitle = 'Is It A One Hit Wonder';
+const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+---
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		{description && <meta name="description" content={description} />}
+		<title>{fullTitle}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

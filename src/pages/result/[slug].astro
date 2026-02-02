@@ -1,0 +1,27 @@
+---
+/**
+ * Build-time static path generation from list JSON (ADR-5).
+ * One HTML per list entry at /result/[slug]. Full content in Story 2.3.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import listData, { type OneHitWonderEntry } from '../../data/load-list';
+
+export function getStaticPaths() {
+	const slugs = listData.map((e) => e.slug);
+	if (new Set(slugs).size !== slugs.length) {
+		throw new Error('Duplicate slugs in one-hit-wonders.json; enforce uniqueness in fetch script.');
+	}
+	return listData.map((entry: OneHitWonderEntry) => ({
+		params: { slug: entry.slug },
+		props: { entry },
+	}));
+}
+
+const { entry } = Astro.props;
+---
+
+<BaseLayout title={`${entry.artist} – ${entry.song}`}>
+	<!-- Placeholder until Story 2.3: verdict, one-hit definition, source -->
+	<h1 class="text-lg">{entry.artist}</h1>
+	<p>{entry.song} ({entry.year})</p>
+</BaseLayout>
