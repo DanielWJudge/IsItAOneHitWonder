@@ -1,6 +1,6 @@
 # Story 1.4: Add CI workflow with fetch, build, and deploy to GitHub Pages
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -126,3 +126,14 @@ So that the site is updated on a schedule and remains usable when the API fetch 
 ## Change Log
 
 - 2026-02-15: Implemented CI workflow with fetch, build, deploy to GitHub Pages; added deployment documentation.
+- 2026-02-15: Code review (AI). Addressed findings: added concurrency to deploy.yml, first-time setup note to DEPLOYMENT.md; committed one-hit-wonders.json as fallback. Cross-story fixes: load-list validation, fetch retry/min entries, empty list guard. Status → done.
+
+### Senior Developer Review (AI)
+
+**Review date:** 2026-02-15  
+**Outcome:** Approve (after fixes applied)
+
+**Findings addressed:**
+- Deploy concurrency — added `concurrency: group: pages, cancel-in-progress: false` to avoid overlapping deploys
+- DEPLOYMENT.md — added first-time setup note documenting JSON fallback
+- Committed `one-hit-wonders.json` for build resilience when fetch fails
