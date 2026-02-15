@@ -13,6 +13,8 @@ const ROOT = join(__dirname, "..");
 const OUTPUT_PATH = join(ROOT, "src", "data", "one-hit-wonders.json");
 
 const FETCH_TIMEOUT_MS = 30_000;
+const FETCH_RETRIES = 3;
+const MIN_ENTRIES = 100;
 const EXIT_NETWORK = 1;
 const EXIT_API = 2;
 const EXIT_FILE = 3;
@@ -23,78 +25,90 @@ const API_URL =
 const USER_AGENT = "IsItAOneHitWonder/1.0 (https://github.com/IsItAOneHitWonder)";
 
 /**
- * Fetch wikitext from MediaWiki API.
+ * Fetch wikitext from MediaWiki API with retries for transient network failures.
  * @returns {Promise<string>} Raw wikitext content
  */
 async function fetchWikitext() {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  let lastErr;
+  for (let attempt = 1; attempt <= FETCH_RETRIES; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
 
-  let res;
-  try {
-    res = await fetch(API_URL, {
-      headers: { "User-Agent": USER_AGENT },
-      signal: controller.signal,
-    });
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if (err.name === "AbortError") {
-      console.error("API request timed out");
-    } else {
-      console.error("Network error:", err.message);
+    try {
+      const res = await fetch(API_URL, {
+        headers: { "User-Agent": USER_AGENT },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        console.error(`API request failed: ${res.status} ${res.statusText}`);
+        process.exit(EXIT_API);
+      }
+
+      const contentType = res.headers.get("content-type") || "";
+      if (!contentType.includes("application/json")) {
+        console.error("API response was not JSON (Content-Type:", contentType, ")");
+        process.exit(EXIT_API);
+      }
+
+      let data;
+      try {
+        data = await res.json();
+      } catch (err) {
+        console.error("API response was not valid JSON:", err.message);
+        process.exit(EXIT_API);
+      }
+
+      if (data.error) {
+        console.error("API error:", data.error.info || data.error);
+        process.exit(EXIT_API);
+      }
+
+      const pages = data?.query?.pages;
+      if (!pages?.length) {
+        console.error("No pages in API response");
+        process.exit(EXIT_API);
+      }
+
+      const revisions = pages[0]?.revisions;
+      if (!revisions?.length) {
+        console.error("No revisions in API response");
+        process.exit(EXIT_API);
+      }
+
+      const content = revisions[0]?.slots?.main?.content;
+      if (content == null) {
+        console.error("No wikitext content in API response");
+        process.exit(EXIT_API);
+      }
+
+      if (!content.includes("one-hit") && !content.includes("List of")) {
+        console.error("API response does not look like the expected list page");
+        process.exit(EXIT_API);
+      }
+
+      return content;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      lastErr = err;
+      if (err.name === "AbortError") {
+        console.error(`API request timed out (attempt ${attempt}/${FETCH_RETRIES})`);
+      } else {
+        console.error(`Network error (attempt ${attempt}/${FETCH_RETRIES}):`, err.message);
+      }
+      if (attempt < FETCH_RETRIES) {
+        const delay = 1000 * attempt;
+        await new Promise((r) => setTimeout(r, delay));
+      }
     }
-    process.exit(EXIT_NETWORK);
   }
-  clearTimeout(timeoutId);
-
-  if (!res.ok) {
-    console.error(`API request failed: ${res.status} ${res.statusText}`);
-    process.exit(EXIT_API);
+  if (lastErr?.name === "AbortError") {
+    console.error("API request timed out after retries");
+  } else {
+    console.error("Network error after retries:", lastErr?.message);
   }
-
-  const contentType = res.headers.get("content-type") || "";
-  if (!contentType.includes("application/json")) {
-    console.error("API response was not JSON (Content-Type:", contentType, ")");
-    process.exit(EXIT_API);
-  }
-
-  let data;
-  try {
-    data = await res.json();
-  } catch (err) {
-    console.error("API response was not valid JSON:", err.message);
-    process.exit(EXIT_API);
-  }
-
-  if (data.error) {
-    console.error("API error:", data.error.info || data.error);
-    process.exit(EXIT_API);
-  }
-
-  const pages = data?.query?.pages;
-  if (!pages?.length) {
-    console.error("No pages in API response");
-    process.exit(EXIT_API);
-  }
-
-  const revisions = pages[0]?.revisions;
-  if (!revisions?.length) {
-    console.error("No revisions in API response");
-    process.exit(EXIT_API);
-  }
-
-  const content = revisions[0]?.slots?.main?.content;
-  if (content == null) {
-    console.error("No wikitext content in API response");
-    process.exit(EXIT_API);
-  }
-
-  if (!content.includes("one-hit") && !content.includes("List of")) {
-    console.error("API response does not look like the expected list page");
-    process.exit(EXIT_API);
-  }
-
-  return content;
+  process.exit(EXIT_NETWORK);
 }
 
 /**
@@ -177,6 +191,14 @@ async function main() {
   const wikitext = await fetchWikitext();
   const entries = parseWikitext(wikitext);
   const withSlugs = assignSlugs(entries);
+
+  if (withSlugs.length < MIN_ENTRIES) {
+    console.error(
+      `Parser produced only ${withSlugs.length} entries (expected at least ${MIN_ENTRIES}). API format may have changed.`
+    );
+    process.exit(EXIT_API);
+  }
+
   const outDir = dirname(OUTPUT_PATH);
   try {
     mkdirSync(outDir, { recursive: true });

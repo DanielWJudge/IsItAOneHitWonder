@@ -7,6 +7,11 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import listData, { type OneHitWonderEntry } from '../../data/load-list';
 
 export function getStaticPaths() {
+	if (listData.length === 0) {
+		throw new Error(
+			'one-hit-wonders.json is empty. Run npm run fetch-data before build, or ensure the file is committed.'
+		);
+	}
 	const slugs = listData.map((e) => e.slug);
 	if (new Set(slugs).size !== slugs.length) {
 		throw new Error('Duplicate slugs in one-hit-wonders.json; enforce uniqueness in fetch script.');

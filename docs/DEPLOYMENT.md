@@ -2,6 +2,15 @@
 
 This site is deployed to GitHub Pages via GitHub Actions.
 
+## First-Time Setup
+
+Ensure `src/data/one-hit-wonders.json` exists before the first deploy. It is committed as a fallback so that:
+
+- Fresh clones can build without running the fetch script first
+- When the Wikipedia API fetch fails in CI, the build proceeds with the last known data
+
+To regenerate the data locally, run `npm run fetch-data` before committing.
+
 ## GitHub Pages Setup
 
 **Important:** In the repository Settings → Pages, set the **Source** to **"GitHub Actions"** (not "Deploy from a branch"). The workflow uses `peaceiris/actions-gh-pages`, which pushes to the `gh-pages` branch via Actions.
