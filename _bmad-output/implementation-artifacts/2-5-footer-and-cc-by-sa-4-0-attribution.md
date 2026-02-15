@@ -1,6 +1,6 @@
 # Story 2.5: Footer and CC BY-SA 4.0 attribution
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -106,7 +106,7 @@ so that I can verify attribution and reuse terms.
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+AI-assisted (code review fixes applied 2026-02-15)
 
 ### Debug Log References
 
@@ -115,12 +115,16 @@ so that I can verify attribution and reuse terms.
 - Created Footer.astro with source and CC BY-SA 4.0 license links; stone/amber palette; 44px touch targets; focus:ring-amber-500.
 - Integrated Footer into BaseLayout so it appears on home, Yes result, and no-match pages.
 - Build verified; footer in dist output on all pages.
+- Code review (2026-02-15): Extracted shared attribution constants to src/lib/attribution.ts; updated Footer and ResultBlock to use them. Replaced story placeholder; clarified BaseLayout comment.
 
 ### File List
 
 - src/components/Footer.astro (created)
 - src/layouts/BaseLayout.astro (modified)
+- src/lib/attribution.ts (created, code review)
+- src/components/ResultBlock.astro (modified, code review – now uses shared attribution constants)
 
 ### Change Log
 
 - 2026-02-15: Footer component created; integrated into BaseLayout for site-wide CC BY-SA 4.0 attribution.
+- 2026-02-15: Code review fixes: shared attribution module (src/lib/attribution.ts), story placeholder and BaseLayout comment updated.

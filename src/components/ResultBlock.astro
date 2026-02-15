@@ -4,6 +4,7 @@
  * Used on Yes result pages and no-match page (verdict="No"). Stone/amber palette, 44px touch targets.
  */
 import type { OneHitWonderEntry } from '../data/load-list';
+import { SOURCE_URL, LICENSE_URL, ATTRIBUTION_LINK_CLASS } from '../lib/attribution';
 
 interface Props {
 	entry?: OneHitWonderEntry;
@@ -12,11 +13,6 @@ interface Props {
 
 const { entry, verdict } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const sourceUrl = 'https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States';
-const licenseUrl = 'https://creativecommons.org/licenses/by-sa/4.0/';
-
-const linkClass =
-	'text-amber-600 underline hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded inline-flex items-center min-h-[44px] min-w-[44px] whitespace-nowrap';
 
 const showOneHit = verdict === 'Yes' && entry?.artist && entry?.song;
 ---
@@ -35,11 +31,11 @@ const showOneHit = verdict === 'Yes' && entry?.artist && entry?.song;
 	</p>
 	<h3 id="source-heading" class="sr-only">Source</h3>
 	<p class="mt-2 text-sm text-stone-500">
-		<a href={sourceUrl} class={linkClass}>Source: Wikipedia US list</a>
+		<a href={SOURCE_URL} class={ATTRIBUTION_LINK_CLASS}>Source: Wikipedia US list</a>
 		{' · '}
-		<a href={licenseUrl} class={linkClass}>CC BY-SA 4.0</a>
+		<a href={LICENSE_URL} class={ATTRIBUTION_LINK_CLASS}>CC BY-SA 4.0</a>
 	</p>
 </section>
 <nav class="mt-6" aria-label="Result actions">
-	<a href={base} class={linkClass}>Search again</a>
+	<a href={base} class={ATTRIBUTION_LINK_CLASS}>Search again</a>
 </nav>
