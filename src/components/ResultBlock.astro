@@ -1,0 +1,40 @@
+---
+/**
+ * ResultBlock: verdict, one hit, definition, source (ADR-4, ADR-5, ADR-6).
+ * Used on Yes result pages. Matches no-match.astro styling (stone/amber palette).
+ */
+import type { OneHitWonderEntry } from '../data/load-list';
+
+interface Props {
+	entry: OneHitWonderEntry;
+	verdict: 'Yes' | 'No';
+}
+
+const { entry, verdict } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const sourceUrl = 'https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States';
+const licenseUrl = 'https://creativecommons.org/licenses/by-sa/4.0/';
+
+const linkClass =
+	'text-amber-600 underline hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded inline-flex items-center min-h-[44px] min-w-[44px]';
+---
+
+<section class="mt-6" aria-labelledby="verdict-heading">
+	<h2 id="verdict-heading" class="text-xl font-medium text-stone-900">{verdict}</h2>
+	{verdict === 'Yes' && (
+		<p class="mt-2 text-stone-600">
+			The one hit: {entry.song} – {entry.artist}
+		</p>
+	)}
+	<p class="mt-4 text-stone-600">
+		We use the Wikipedia US one-hit wonder list: one top-40 hit in the US.
+	</p>
+	<p class="mt-2 text-sm text-stone-500">
+		<a href={sourceUrl} class={linkClass}>Source: Wikipedia US list</a>
+		{' · '}
+		<a href={licenseUrl} class={linkClass}>CC BY-SA 4.0</a>
+	</p>
+</section>
+<p class="mt-6">
+	<a href={base} class={linkClass}>Search again</a>
+</p>

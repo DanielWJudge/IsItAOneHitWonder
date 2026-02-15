@@ -4,6 +4,7 @@
  * One HTML per list entry at /result/[slug]. Full content in Story 2.3.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import ResultBlock from '../../components/ResultBlock.astro';
 import listData, { type OneHitWonderEntry } from '../../data/load-list';
 
 export function getStaticPaths() {
@@ -23,10 +24,13 @@ export function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const pageTitle = `${entry.artist} – One-Hit Wonder?`;
+const metaDescription = `Yes – ${entry.artist} is a one-hit wonder. The one hit: ${entry.song}.`;
 ---
 
-<BaseLayout title={`${entry.artist} – ${entry.song}`}>
-	<!-- Placeholder until Story 2.3: verdict, one-hit definition, source -->
-	<h1 class="text-lg">{entry.artist}</h1>
-	<p>{entry.song} ({entry.year})</p>
+<BaseLayout title={pageTitle} description={metaDescription}>
+	<main class="mx-auto max-w-2xl px-4 py-8">
+		<h1 class="text-2xl font-semibold">Is It A One Hit Wonder</h1>
+		<ResultBlock entry={entry} verdict="Yes" />
+	</main>
 </BaseLayout>
