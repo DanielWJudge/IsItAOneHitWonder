@@ -1,0 +1,40 @@
+---
+/**
+ * SearchForm: single prominent search control for artist/song search.
+ * UI only for Story 2.1; search logic and navigation in Story 2.2.
+ * ADR-6: keyboard-operable, visible focus indicators, associated label.
+ */
+---
+<form
+	id="search-form"
+	class="flex flex-col gap-3 sm:flex-row sm:items-center"
+	action="#"
+	method="get"
+	role="search"
+	aria-label="Search by artist or song"
+>
+	<label for="search-input" class="sr-only">
+		Search by artist or song
+	</label>
+	<input
+		id="search-input"
+		type="search"
+		name="q"
+		placeholder="Artist or song"
+		class="min-h-[44px] min-w-[44px] flex-1 rounded-md border border-stone-300 bg-white px-4 py-2 text-base text-stone-900 placeholder-stone-500 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+		autocomplete="off"
+	/>
+	<button
+		type="submit"
+		class="min-h-[44px] min-w-[44px] rounded-md bg-amber-600 px-6 py-2 font-medium text-white transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+	>
+		Search
+	</button>
+</form>
+
+<script>
+	// Story 2.2 wires search logic; for now prevent default submit.
+	document.getElementById('search-form')?.addEventListener('submit', (e) => {
+		e.preventDefault();
+	});
+</script>

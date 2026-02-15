@@ -24,8 +24,8 @@ development_status:
   1-5-configure-site-url-and-https-for-github-pages: done
   epic-1-retrospective: done
 
-  epic-2: backlog
-  2-1-home-page-with-single-prominent-search-control: backlog
+  epic-2: in-progress
+  2-1-home-page-with-single-prominent-search-control: done
   2-2-client-side-search-by-artist-or-song-and-navigation-to-result: backlog
   2-3-result-page-with-verdict-one-hit-definition-and-source: backlog
   2-4-no-match-result-state: backlog

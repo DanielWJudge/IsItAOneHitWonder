@@ -1,13 +1,17 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SearchForm from '../components/SearchForm.astro';
 // Build-time import via shared module: single source for list data (ADR-1).
 import listData from '../data/load-list';
 ---
 
 <BaseLayout title="Is It A One Hit Wonder">
-	<h1 class="text-lg">Is It A One Hit Wonder</h1>
-	<!-- List data inlined at build for client-side search (Epic 2). Client loads from window.__ONE_HIT_WONDERS__. -->
-	<script define:vars={{ list: listData }}>
-		window.__ONE_HIT_WONDERS__ = list;
-	</script>
+	<main class="mx-auto max-w-2xl px-4 py-8">
+		<h1 class="text-2xl font-semibold">Is It A One Hit Wonder</h1>
+		<SearchForm />
+		<!-- List data inlined at build for client-side search (Epic 2). Client loads from window.__ONE_HIT_WONDERS__. -->
+		<script define:vars={{ list: listData }}>
+			window.__ONE_HIT_WONDERS__ = list;
+		</script>
+	</main>
 </BaseLayout>
