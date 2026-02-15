@@ -4,6 +4,7 @@
  * Use on index and result pages so structure and assets stay in sync.
  */
 import '../styles/global.css';
+import Footer from '../components/Footer.astro';
 
 interface Props {
 	title: string;
@@ -27,5 +28,6 @@ const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
 	</head>
 	<body>
 		<slot />
+		<Footer />
 	</body>
 </html>

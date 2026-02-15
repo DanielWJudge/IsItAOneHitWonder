@@ -1,0 +1,20 @@
+---
+/**
+ * Footer: source link + CC BY-SA 4.0 license link (ADR-4, ADR-6).
+ * Site-wide attribution on all pages. Stone/amber palette, 44px touch targets.
+ * Matches ResultBlock URLs and link styling for consistency.
+ */
+const sourceUrl = 'https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States';
+const licenseUrl = 'https://creativecommons.org/licenses/by-sa/4.0/';
+
+const linkClass =
+	'text-amber-600 underline hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded inline-flex items-center min-h-[44px] min-w-[44px] whitespace-nowrap';
+---
+
+<footer class="mt-12 border-t border-stone-200 py-6" aria-label="Attribution">
+	<p class="mx-auto max-w-2xl px-4 text-sm text-stone-500">
+		<a href={sourceUrl} class={linkClass}>Source: Wikipedia US list</a>
+		{' · '}
+		<a href={licenseUrl} class={linkClass}>CC BY-SA 4.0</a>
+	</p>
+</footer>
