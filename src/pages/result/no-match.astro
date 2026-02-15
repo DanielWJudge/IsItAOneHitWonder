@@ -1,32 +1,14 @@
 ---
 /**
  * No-match result page (ADR-7).
- * Shown when search finds no match. Same definition and source as Yes results.
- * Minimal content per Story 2.2 Task 3.1; Story 2.4 may enhance.
+ * Shown when search finds no match. Uses ResultBlock for consistent definition, source, and 44px touch targets.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
-
-const base = import.meta.env.BASE_URL;
-const sourceUrl = 'https://en.wikipedia.org/wiki/List_of_one-hit_wonders_in_the_United_States';
-const licenseUrl = 'https://creativecommons.org/licenses/by-sa/4.0/';
+import ResultBlock from '../../components/ResultBlock.astro';
 ---
 <BaseLayout title="Not on our list" description="Search did not find a match on the Wikipedia US one-hit wonder list.">
 	<main class="mx-auto max-w-2xl px-4 py-8">
 		<h1 class="text-2xl font-semibold">Is It A One Hit Wonder</h1>
-		<section class="mt-6" aria-labelledby="verdict-heading">
-			<h2 id="verdict-heading" class="text-xl font-medium text-stone-900">No</h2>
-			<p class="mt-2 text-stone-600">Not on our list.</p>
-			<p class="mt-4 text-stone-600">
-				We use the Wikipedia US one-hit wonder list: one top-40 hit in the US.
-			</p>
-			<p class="mt-2 text-sm text-stone-500">
-				<a href={sourceUrl} class="text-amber-600 underline hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded">Source: Wikipedia US list</a>
-				{' · '}
-				<a href={licenseUrl} class="text-amber-600 underline hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded">CC BY-SA 4.0</a>
-			</p>
-		</section>
-		<p class="mt-6">
-			<a href={base} class="text-amber-600 underline hover:text-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded">Search again</a>
-		</p>
+		<ResultBlock verdict="No" />
 	</main>
 </BaseLayout>

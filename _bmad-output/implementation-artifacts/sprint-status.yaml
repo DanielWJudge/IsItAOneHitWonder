@@ -27,7 +27,7 @@ development_status:
   epic-2: in-progress
   2-1-home-page-with-single-prominent-search-control: done
   2-2-client-side-search-by-artist-or-song-and-navigation-to-result: done
-  2-3-result-page-with-verdict-one-hit-definition-and-source: review
+  2-3-result-page-with-verdict-one-hit-definition-and-source: done
   2-4-no-match-result-state: backlog
   2-5-footer-and-cc-by-sa-4-0-attribution: backlog
   epic-2-retrospective: optional

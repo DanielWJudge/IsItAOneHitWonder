@@ -1,6 +1,6 @@
 # Story 2.3: Result page with verdict, one hit, definition, and source
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -108,6 +108,11 @@ so that I have the full answer and its source without opening another page.
 - [UX Design - Result at a glance, Transparency](_bmad-output/planning-artifacts/ux-design-specification.md)
 - [no-match.astro](src/pages/result/no-match.astro) — structure and styling reference
 
+### Senior Developer Review (AI)
+
+- **Review date:** 2026-02-15. **Outcome:** Changes requested; fixes applied automatically.
+- **Title/SEO note:** AC and ADR-5 examples use "IsItAOneHitWonder" as the site name; the actual site title in BaseLayout is **"Is It A One Hit Wonder"** (with spaces). The browser title is therefore "[Artist] – One-Hit Wonder? | Is It A One Hit Wonder". No code change required; this is the intended brand string.
+
 ## Dev Agent Record
 
 ### Agent Model Used
@@ -127,12 +132,15 @@ so that I have the full answer and its source without opening another page.
 - ResultBlock.astro created with verdict, one hit line, definition, source links (Wikipedia US list + CC BY-SA 4.0), and Search again link. Semantic structure: section aria-labelledby, h2 verdict-heading. Stone/amber palette, touch targets ≥44px, focus indicators.
 - result/[slug].astro updated: ResultBlock integration, page title "[Artist] – One-Hit Wonder?", meta description "Yes – [Artist] is a one-hit wonder. The one hit: [Song]."
 - Build verified: `npm run build` succeeds; /result/chumbawamba renders correctly.
+- Code review (2026-02-15): Fixes applied—result page h1 now page-specific; no-match uses ResultBlock; ResultBlock has optional entry, sr-only Definition/Source h3s, nav for Search again, defensive one-hit guard.
 
 ### File List
 
 - src/components/ResultBlock.astro (created)
 - src/pages/result/[slug].astro (modified)
+- src/pages/result/no-match.astro (modified — code review: now uses ResultBlock for consistency and 44px touch targets)
 
 ## Change Log
 
 - 2026-02-15: Implemented ResultBlock component, result page with verdict/one-hit/definition/source, SEO meta, Search again link. All AC satisfied.
+- 2026-02-15: Code review fixes: result page h1 set to page-specific (artist – One-Hit Wonder?); no-match.astro refactored to use ResultBlock; ResultBlock supports optional entry and verdict="No", sr-only h3s for Definition/Source, nav landmark for Search again, defensive guard for one-hit line; story updated with review note and file list.
