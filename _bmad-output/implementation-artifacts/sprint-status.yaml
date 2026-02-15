@@ -21,7 +21,7 @@ development_status:
   1-2-implement-fetch-and-parse-script-for-wikipedia-one-hit-wonder-list: done
   1-3-wire-build-time-json-into-astro-and-static-output: done
   1-4-add-ci-workflow-with-fetch-build-and-deploy-to-github-pages: done
-  1-5-configure-site-url-and-https-for-github-pages: backlog
+  1-5-configure-site-url-and-https-for-github-pages: done
   epic-1-retrospective: optional
 
   epic-2: backlog
