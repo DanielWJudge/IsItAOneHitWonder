@@ -1,7 +1,7 @@
 ---
 /**
  * SearchForm: single prominent search control for artist/song search.
- * UI only for Story 2.1; search logic and navigation in Story 2.2.
+ * Client-side Fuse.js search on build-time JSON (ADR-2). Navigates to result or no-match (ADR-5, ADR-7).
  * ADR-6: keyboard-operable, visible focus indicators, associated label.
  */
 ---
@@ -25,16 +25,74 @@
 		autocomplete="off"
 	/>
 	<button
+		id="search-submit"
 		type="submit"
-		class="min-h-[44px] min-w-[44px] rounded-md bg-amber-600 px-6 py-2 font-medium text-white transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+		class="min-h-[44px] min-w-[44px] rounded-md bg-amber-600 px-6 py-2 font-medium text-white transition-colors hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed"
 	>
 		Search
 	</button>
+	<p id="search-message" role="status" aria-live="polite" class="min-h-[1.5rem] text-sm text-stone-600 mt-1"></p>
 </form>
 
 <script>
-	// Story 2.2 wires search logic; for now prevent default submit.
+	import Fuse from 'fuse.js';
+
+	const base = import.meta.env.BASE_URL;
+	// ADR-7: no (or low-confidence) match → no-match view. Fuse score 0 = perfect, 1 = mismatch.
+	const CONFIDENCE_MAX_SCORE = 0.5;
+
+	function runSearch(query: string): { artist: string; song: string; year: string | number; slug: string } | null {
+		const list = (window as unknown as { __ONE_HIT_WONDERS__?: unknown[] }).__ONE_HIT_WONDERS__;
+		if (!Array.isArray(list) || list.length === 0) return null;
+
+		const fuse = new Fuse(list, {
+			keys: ['artist', 'song'],
+			threshold: 0.4,
+			includeScore: true,
+		});
+
+		const results = fuse.search(query.trim());
+		if (results.length === 0) return null;
+		const best = results[0];
+		const score = (best as { score?: number }).score;
+		if (score != null && score > CONFIDENCE_MAX_SCORE) return null; // low-confidence → no-match
+		return best.item as { artist: string; song: string; year: string | number; slug: string };
+	}
+
+	function setLoading(loading: boolean) {
+		const submit = document.getElementById('search-submit') as HTMLButtonElement | null;
+		if (!submit) return;
+		submit.disabled = loading;
+		submit.textContent = loading ? 'Searching…' : 'Search';
+	}
+
 	document.getElementById('search-form')?.addEventListener('submit', (e) => {
 		e.preventDefault();
+
+		const input = document.getElementById('search-input') as HTMLInputElement | null;
+		const messageEl = document.getElementById('search-message');
+		if (!input) return;
+
+		const query = input.value?.trim() ?? '';
+		if (!query) {
+			if (messageEl) messageEl.textContent = 'Please enter an artist or song.';
+			return;
+		}
+		if (messageEl) messageEl.textContent = '';
+
+		setLoading(true);
+
+		try {
+			const match = runSearch(query);
+			if (match) {
+				const safeSlug = encodeURIComponent(match.slug);
+				location.assign(base + 'result/' + safeSlug);
+			} else {
+				location.assign(base + 'result/no-match');
+			}
+		} catch {
+			setLoading(false);
+			location.assign(base + 'result/no-match');
+		}
 	});
 </script>
