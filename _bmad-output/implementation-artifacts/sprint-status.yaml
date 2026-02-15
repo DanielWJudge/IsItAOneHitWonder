@@ -30,8 +30,8 @@ development_status:
   2-3-result-page-with-verdict-one-hit-definition-and-source: done
   2-4-no-match-result-state: done
   2-5-footer-and-cc-by-sa-4-0-attribution: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
-  epic-3: backlog
-  3-1-copy-one-line-button-and-shareable-line-format: backlog
+  epic-3: in-progress
+  3-1-copy-one-line-button-and-shareable-line-format: done
   epic-3-retrospective: optional

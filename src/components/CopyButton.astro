@@ -1,0 +1,63 @@
+---
+/**
+ * CopyButton: writes shareable line to clipboard via Clipboard API (ADR-8).
+ * Stone/amber palette, 44px touch target, "Copied" feedback 2–3s.
+ * Accessible name from button text (no aria-label) so "Copied"/"Copy failed" are announced; separate live region for status.
+ */
+interface Props {
+	shareableLine: string;
+}
+const { shareableLine } = Astro.props;
+---
+
+<div class="copy-button-wrapper inline-block">
+	<button
+		type="button"
+		class="copy-one-line-btn inline-flex items-center justify-center min-h-[44px] min-w-[44px] px-4 py-2 rounded text-amber-700 bg-stone-100 hover:bg-stone-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 border border-stone-300 font-medium transition-colors"
+		data-shareable-line={shareableLine}
+	>
+		Copy one line
+	</button>
+	<span class="sr-only" aria-live="polite" aria-atomic="true" data-copy-status-announcer></span>
+</div>
+
+<script>
+	function initCopyButtons() {
+		document.querySelectorAll<HTMLButtonElement>('.copy-one-line-btn').forEach((btn) => {
+			if (btn.dataset.initialized === 'true') return;
+			btn.dataset.initialized = 'true';
+			const wrapper = btn.closest('.copy-button-wrapper');
+			const announcer = wrapper?.querySelector<HTMLElement>('[data-copy-status-announcer]');
+
+			btn.addEventListener('click', async () => {
+				const line = btn.getAttribute('data-shareable-line');
+				if (!line) return;
+
+				try {
+					await navigator.clipboard.writeText(line);
+					btn.textContent = 'Copied';
+					if (announcer) announcer.textContent = 'Copied';
+					setTimeout(() => {
+						btn.textContent = 'Copy one line';
+						if (announcer) announcer.textContent = '';
+					}, 2500);
+				} catch {
+					// Clipboard API failed (e.g. not HTTPS, permission denied)
+					btn.textContent = 'Copy failed';
+					if (announcer) announcer.textContent = 'Copy failed';
+					setTimeout(() => {
+						btn.textContent = 'Copy one line';
+						if (announcer) announcer.textContent = '';
+					}, 2500);
+				}
+			});
+		});
+	}
+
+	// Run on load
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initCopyButtons);
+	} else {
+		initCopyButtons();
+	}
+</script>

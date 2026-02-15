@@ -5,6 +5,8 @@
  */
 import type { OneHitWonderEntry } from '../data/load-list';
 import { SOURCE_URL, LICENSE_URL, ATTRIBUTION_LINK_CLASS } from '../lib/attribution';
+import { buildShareableLine } from '../lib/shareable-line';
+import CopyButton from './CopyButton.astro';
 
 interface Props {
 	entry?: OneHitWonderEntry;
@@ -15,6 +17,7 @@ const { entry, verdict } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 const showOneHit = verdict === 'Yes' && entry?.artist && entry?.song;
+const shareableLine = buildShareableLine(verdict, entry);
 ---
 
 <section class="mt-6" aria-labelledby="verdict-heading">
@@ -36,6 +39,7 @@ const showOneHit = verdict === 'Yes' && entry?.artist && entry?.song;
 		<a href={LICENSE_URL} class={ATTRIBUTION_LINK_CLASS}>CC BY-SA 4.0</a>
 	</p>
 </section>
-<nav class="mt-6" aria-label="Result actions">
+<nav class="mt-6 flex flex-wrap items-center gap-3" aria-label="Result actions">
+	<CopyButton client:load shareableLine={shareableLine} />
 	<a href={base} class={ATTRIBUTION_LINK_CLASS}>Search again</a>
 </nav>
